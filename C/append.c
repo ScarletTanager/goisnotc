@@ -23,8 +23,7 @@ int append(go_slice_t *sp, int argc, ...) {
     int new_cap = (total * 3/2) + 1;
 
     /* First attempt just to resize */
-    fprintf(stderr, "DEBUG: Will attempt to resize\n");
-    /*new_array = realloc(sp->array, (new_cap * sizeof(int)));
+    new_array = realloc(sp->array, (new_cap * sizeof(int)));
     if (new_array == NULL) {
       fprintf(stderr, "DEBUG: Unable to resize, creating new array\n");
       /* Nope, so create new array and copy existing elements into it */
@@ -44,9 +43,9 @@ int append(go_slice_t *sp, int argc, ...) {
         free(sp->array);
       }
       sp->array = new_array;
-    /*} else {
+    } else {
       sp->array = new_array;
-    } */
+    }
     sp->cap = new_cap;
   }
 
