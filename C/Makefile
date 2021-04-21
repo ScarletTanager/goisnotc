@@ -15,7 +15,7 @@ else
 DEBUG_FLAG=-g
 endif
 else
-DEBUG_FLAG
+DEBUG_FLAG=
 endif
 
 COMPILE_CMD=$(CC) -I $(INCLUDE_PATHS) $(DEBUG_FLAG) -c

@@ -6,7 +6,7 @@
  * of type int
  */
 int *make_array(int size) {
-  return (int *)calloc(size, sizeof(int));
+  return (int *)malloc((size_t)(size * sizeof(int)));
 }
 
 int append(go_slice_t *sp, int argc, ...) {
@@ -40,8 +40,9 @@ int append(go_slice_t *sp, int argc, ...) {
       free(tmp_array); */
       if (sp->array == NULL) {
         fprintf(stderr, "ERROR: Why in the hell is the array NULL??\n");
+      } else {
+        free(sp->array);
       }
-      free(sp->array);
       sp->array = new_array;
     /*} else {
       sp->array = new_array;

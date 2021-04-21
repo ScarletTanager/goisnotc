@@ -23,7 +23,7 @@ void do_insert_by_pointer_math(int count, go_slice_t *s, int **src);
 int main(int argc, char *argv[]) {
   int initial_size;
   double el_ptr, el_array, el_1x1, el_chunk;
-  go_slice_t *slice;
+  go_slice_t *slice1, *slice2, *slice3, *slice4;
 
   if (argc < 2) {
     fputs("You must specify the size of the initial array\n", stderr);
@@ -51,10 +51,10 @@ int main(int argc, char *argv[]) {
    * Initialize array via pointer arithmetic
    */
 
-  slice = make_slice(initial_size, 0, 0);
-  if (slice != NULL) {
-    el_ptr = benchmark(do_insert_by_pointer_math, chunk_count, slice, src);
-    destroy_slice(slice);
+  slice1 = make_slice(initial_size, 0, 0);
+  if (slice1 != NULL) {
+    el_ptr = benchmark(do_insert_by_pointer_math, chunk_count, slice1, src);
+    destroy_slice(slice1);
   } else {
     fprintf(stderr, "ERROR: Unable to allocate slice for pointer insertion\n");
   }
@@ -63,10 +63,10 @@ int main(int argc, char *argv[]) {
    * And now by indexing into the array
    */
 
-  slice = make_slice(initial_size, 0, 0);
-  if (slice != NULL) {
-    el_array = benchmark(do_insert_by_index, chunk_count, slice, src);
-    destroy_slice(slice);
+  slice2 = make_slice(initial_size, 0, 0);
+  if (slice2 != NULL) {
+    el_array = benchmark(do_insert_by_index, chunk_count, slice2, src);
+    destroy_slice(slice2);
   } else {
     fprintf(stderr, "ERROR: Unable to allocate slice for index insertion\n");
   }
@@ -75,10 +75,10 @@ int main(int argc, char *argv[]) {
    * Now let's simulate the behavior of go's append built-in.
    */
 
-  slice = make_slice(1, 0, 1);
-  if (slice != NULL) {
-    el_1x1 = benchmark(do_append_1x1, chunk_count, slice, src);
-    destroy_slice(slice);
+  slice3 = make_slice(1, 0, 1);
+  if (slice3 != NULL) {
+    el_1x1 = benchmark(do_append_1x1, chunk_count, slice3, src);
+    destroy_slice(slice3);
   } else {
     fprintf(stderr, "ERROR: Unable to allocate slice for 1x1 appending\n");
   }
@@ -87,10 +87,10 @@ int main(int argc, char *argv[]) {
    * And now let's chunk the elements (add them in batches to take advantage of variadicity)
    */
 
-   slice = make_slice(1, 0, 1);
-   if (slice != NULL) {
-     el_chunk = benchmark(do_append, chunk_count, slice, src);
-     destroy_slice(slice);
+   slice4 = make_slice(1, 0, 1);
+   if (slice4 != NULL) {
+     el_chunk = benchmark(do_append, chunk_count, slice4, src);
+     destroy_slice(slice4);
    } else {
      fprintf(stderr, "ERROR: Unable to allocate slice for chunked appending\n");
    }
@@ -117,8 +117,9 @@ go_slice_t *make_slice(int size, int len, int cap) {
 }
 
 int destroy_slice(go_slice_t *s) {
-  if (s->array != NULL) {
-    free(s->array);
+  int *tmp_array = s->array;
+  if (tmp_array != NULL) {
+    free(tmp_array);
   }
   free(s);
   return(0);
