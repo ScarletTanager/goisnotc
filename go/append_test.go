@@ -25,6 +25,17 @@ func DoAppend1x1(dst, src []int) []int {
 	return dst
 }
 
+func DoChunkedAppend(dst, src []int, chunksize int) []int {
+	upper := int(len(src) / chunksize)
+	for i := 0; i < upper; i++ {
+		dst = append(dst, src[(chunksize*i):(chunksize*i)+chunksize]...)
+	}
+	if (upper * chunksize) < len(src) {
+		dst = append(dst, src[(upper*chunksize):]...)
+	}
+	return dst
+}
+
 func DoCopyByIndex(dst, src []int) []int {
 	for i := 0; i < len(src); i++ {
 		dst[i] = src[i]
@@ -62,6 +73,15 @@ func BenchmarkDoAppend1x1Small(b *testing.B) {
 	}
 }
 
+func BenchmarkDoChunkedAppend100Small(b *testing.B) {
+	dst := makeDestination()
+	b.ReportAllocs()
+	b.ResetTimer()
+	for i := 0; i < b.N; i++ {
+		DoChunkedAppend(dst, src[0:200], 100)
+	}
+}
+
 func BenchmarkDoCopyByIndexSmall(b *testing.B) {
 	dst := makeDestination(200)
 	b.ReportAllocs()
@@ -86,6 +106,15 @@ func BenchmarkDoAppend1x1SmallMedium(b *testing.B) {
 	b.ResetTimer()
 	for i := 0; i < b.N; i++ {
 		DoAppend1x1(dst, src[0:2000])
+	}
+}
+
+func BenchmarkDoChunkedAppend100SmallMedium(b *testing.B) {
+	dst := makeDestination()
+	b.ReportAllocs()
+	b.ResetTimer()
+	for i := 0; i < b.N; i++ {
+		DoChunkedAppend(dst, src[0:2000], 100)
 	}
 }
 
@@ -116,6 +145,15 @@ func BenchmarkDoAppend1x1MediumSmall(b *testing.B) {
 	}
 }
 
+func BenchmarkDoChunkedAppend100MediumSmall(b *testing.B) {
+	dst := makeDestination()
+	b.ReportAllocs()
+	b.ResetTimer()
+	for i := 0; i < b.N; i++ {
+		DoChunkedAppend(dst, src[0:20000], 100)
+	}
+}
+
 func BenchmarkDoCopyByIndexMediumSmall(b *testing.B) {
 	dst := makeDestination(20000)
 	b.ReportAllocs()
@@ -140,6 +178,15 @@ func BenchmarkDoAppend1x1Medium(b *testing.B) {
 	b.ResetTimer()
 	for i := 0; i < b.N; i++ {
 		DoAppend1x1(dst, src[0:200000])
+	}
+}
+
+func BenchmarkDoChunkedAppend100Medium(b *testing.B) {
+	dst := makeDestination()
+	b.ReportAllocs()
+	b.ResetTimer()
+	for i := 0; i < b.N; i++ {
+		DoChunkedAppend(dst, src[0:200000], 100)
 	}
 }
 
@@ -170,6 +217,15 @@ func BenchmarkDoAppend1x1MediumLarge(b *testing.B) {
 	}
 }
 
+func BenchmarkDoChunkedAppend100MediumLarge(b *testing.B) {
+	dst := makeDestination()
+	b.ReportAllocs()
+	b.ResetTimer()
+	for i := 0; i < b.N; i++ {
+		DoChunkedAppend(dst, src[0:2000000], 100)
+	}
+}
+
 func BenchmarkDoCopyByIndexMediumLarge(b *testing.B) {
 	dst := makeDestination(2000000)
 	b.ReportAllocs()
@@ -197,6 +253,15 @@ func BenchmarkDoAppend1x1LargeMedium(b *testing.B) {
 	}
 }
 
+func BenchmarkDoChunkedAppend100LargeMedium(b *testing.B) {
+	dst := makeDestination()
+	b.ReportAllocs()
+	b.ResetTimer()
+	for i := 0; i < b.N; i++ {
+		DoChunkedAppend(dst, src[0:20000000], 100)
+	}
+}
+
 func BenchmarkDoCopyByIndexLargeMedium(b *testing.B) {
 	dst := makeDestination(20000000)
 	b.ReportAllocs()
@@ -221,6 +286,15 @@ func BenchmarkDoAppend1x1Large(b *testing.B) {
 	b.ResetTimer()
 	for i := 0; i < b.N; i++ {
 		DoAppend1x1(dst, src[0:200000000])
+	}
+}
+
+func BenchmarkDoChunkedAppend100Large(b *testing.B) {
+	dst := makeDestination()
+	b.ReportAllocs()
+	b.ResetTimer()
+	for i := 0; i < b.N; i++ {
+		DoChunkedAppend(dst, src[0:200000000], 100)
 	}
 }
 

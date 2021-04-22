@@ -16,11 +16,27 @@ int append(go_slice_t *sp, int argc, ...) {
   /*
    * Do we need to grow?
    */
-  int total = sp->len + argc;
-  if (total > sp->cap) {
+  int new_cap = sp->cap;
+  int requested = sp->len + argc;
+  int doublecap = sp->cap + sp->cap;
+  if (requested > doublecap) {
+    new_cap = requested;
+  } else {
+    if (sp->cap < 1024) {
+      new_cap = doublecap;
+    } else {
+      while((new_cap > 0) && (new_cap < requested)) {
+        new_cap += (new_cap / 4);
+      }
+      if (new_cap <= 0) {
+        new_cap = requested;
+      }
+    }
+  }
+
+  if (new_cap > sp->cap) {
     int *new_array;
     int *tmp_array;
-    int new_cap = (total * 3/2) + 1;
 
     /* First attempt just to resize */
     new_array = realloc(sp->array, (new_cap * sizeof(int)));
